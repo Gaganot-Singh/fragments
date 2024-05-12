@@ -1,0 +1,15 @@
+{
+  "name": "fragments",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Repository for a Node.js-based REST API using Express for managing and serving fragments of data.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaganot-Singh/fragments.git"
+  },
+  "author": "Gaganjot Singh",
+  "license": "UNLICENSED"
+}
