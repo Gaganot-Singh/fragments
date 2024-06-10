@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
         );
     }
 
-    logger.info('v1/fragments POST route works');
+    logger.info('v1/fragments POST route');
 
     // Get the headers from the request
     const headers = req.headers;
@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
       size: req.body.length,
     });
 
-    logger.debug({ fragmentMetadata }, 'A fragment is created');
+    logger.debug({ fragmentMetadata }, 'Fragment created');
     const host = process.env.API_URL || req.headers.host;
 
     // Set the Location header
