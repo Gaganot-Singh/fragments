@@ -35,8 +35,7 @@ ENV PORT=8080 \
 WORKDIR /app
 
 # Install curl
-RUN apk update
-RUN apk add curl
+RUN apk update && apk add --no-cache curl=8.8.0
 
 
 # Copying the application from development stage!
@@ -45,7 +44,8 @@ COPY --from=builder /app /app
 # Switch user to node
 USER node
 
-CMD npm start
+# Use JSON notation for CMD
+CMD ["npm", "start"]
 
 EXPOSE 8080
 
