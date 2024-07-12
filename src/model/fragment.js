@@ -82,7 +82,14 @@ class Fragment {
 
   static isSupportedType(value) {
     const { type } = contentType.parse(value);
-    return ['text/plain'].includes(type);
+    return [
+      'text/plain',
+      'text/markdown',
+      'text/html',
+      'text/csv',
+      'application/json',
+      'application/yaml',
+    ].includes(type);
   }
 }
 

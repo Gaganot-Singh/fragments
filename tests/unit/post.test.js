@@ -18,6 +18,56 @@ describe('POST /v1/fragments endpoint', () => {
     expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
   });
 
+  test('allows authenticated users to create a markdown fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'text/markdown')
+      .send('# Sample Markdown')
+      .expect(201);
+    expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
+  });
+
+  test('allows authenticated users to create an HTML fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'text/html')
+      .send('<p>This is a sample fragment</p>')
+      .expect(201);
+    expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
+  });
+
+  test('allows authenticated users to create a CSV fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'text/csv')
+      .send('col1,col2\nval1,val2')
+      .expect(201);
+    expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
+  });
+
+  test('allows authenticated users to create a JSON fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'application/json')
+      .send(JSON.stringify({ key: 'value' }))
+      .expect(201);
+    expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
+  });
+
+  test('allows authenticated users to create a YAML fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'application/yaml')
+      .send('key: value')
+      .expect(201);
+    expect(res.header.location).toMatch(/\/v1\/fragments\/([\w-]+)$/);
+  });
+
   test('returns 415 Error for unsupported fragment type', async () => {
     const res = await request(app)
       .post('/v1/fragments')
