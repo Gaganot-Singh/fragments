@@ -70,7 +70,26 @@ const getFragmentByID = async (req, res) => {
   }
 };
 
+const getFragmentInfoByID = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ownerId = req.user;
+
+    logger.info(`Fetching fragment info by ID: ${id} for user: ${ownerId}`);
+
+    const fragmentMetadata = await Fragment.byId(ownerId, id);
+
+    logger.debug({ fragmentMetadata }, 'Successfully retrieved fragment metadata');
+
+    res.status(200).json(createSuccessResponse({ fragment: fragmentMetadata }));
+  } catch (error) {
+    logger.warn({ error }, `Fragment not found: ID ${req.params.id}`);
+    res.status(404).json(createErrorResponse(404, `Fragment not found: ID ${req.params.id}`));
+  }
+};
+
 module.exports = {
   getFragments,
   getFragmentByID,
+  getFragmentInfoByID,
 };

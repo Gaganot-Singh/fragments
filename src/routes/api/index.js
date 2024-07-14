@@ -2,7 +2,7 @@
 
 const { Fragment } = require('../../model/fragment');
 const contentType = require('content-type');
-const { getFragments, getFragmentByID } = require('./get');
+const { getFragments, getFragmentByID, getFragmentInfoByID } = require('./get');
 /**
  * The main entry-point for the v1 version of the fragments API.
  */
@@ -24,6 +24,7 @@ const rawBody = () =>
 // Define our first route, which will be: GET /v1/fragments
 router.get('/fragments', getFragments);
 router.get('/fragments/:id', getFragmentByID);
+router.get('/fragments/:id/info', getFragmentInfoByID);
 
 // Other routes (POST, DELETE, etc.) will go here later on...
 
