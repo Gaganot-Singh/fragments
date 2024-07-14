@@ -77,13 +77,25 @@ class Fragment {
   }
 
   get formats() {
+    if (this.mimeType === 'text/markdown') {
+      return ['html', 'txt'];
+    }
     return [this.mimeType];
+  }
+
+  getMimeType(extension) {
+    const mimeTypes = {
+      html: 'text/html',
+      txt: 'text/plain',
+    };
+    return mimeTypes[extension] || this.mimeType;
   }
 
   static isSupportedType(value) {
     const { type } = contentType.parse(value);
     return [
       'text/plain',
+      'text/plain; charset=utf-8',
       'text/markdown',
       'text/html',
       'text/csv',

@@ -52,6 +52,21 @@ describe('GET /v1/fragments/', () => {
     expect(res2.body.fragments[1].id).toBe(id);
     expect(res2.body.fragments[1].ownerId).toBe(ownerId);
   });
+
+  // Additional tests
+  test('testing GET /fragments?expand=0', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-Type', 'text/plain')
+      .send('This is my fragment string');
+    const id = res.body.fragment.id;
+
+    const res2 = await request(app)
+      .get('/v1/fragments?expand=0')
+      .auth('user1@email.com', 'password1');
+    expect(res2.body.fragments[2]).toBe(id);
+  });
 });
 
 describe('GET /v1/fragments/:id', () => {
@@ -113,10 +128,58 @@ describe('GET /v1/fragments/:id', () => {
     const id = res.body.fragment.id;
 
     const res2 = await request(app)
-      .get(`/v1/fragments/${id}.html`)
+      .get(`/v1/fragments/${id}.unsupported`)
       .auth('user1@email.com', 'password1');
     expect(res2.statusCode).toBe(415);
   });
+
+  // Additional tests
+  test('must return status 415 for .md extension when fragment type is not text/markdown', async () => {
+    const body = 'This is a plain text fragment';
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-Type', 'text/plain')
+      .send(body);
+    const id = res.body.fragment.id;
+
+    const res2 = await request(app)
+      .get(`/v1/fragments/${id}.md`)
+      .auth('user1@email.com', 'password1');
+    expect(res2.statusCode).toBe(415);
+  });
+
+  test('must return status 200 for .html extension when fragment type is text/markdown', async () => {
+    const body = '# This is a markdown fragment';
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-Type', 'text/markdown')
+      .send(body);
+    const id = res.body.fragment.id;
+
+    const res2 = await request(app)
+      .get(`/v1/fragments/${id}.html`)
+      .auth('user1@email.com', 'password1');
+    expect(res2.statusCode).toBe(200);
+  });
+});
+
+test('must return status 200 for .md extension when fragment type is text/markdown', async () => {
+  const body = '# This is a markdown fragment';
+  const res = await request(app)
+    .post('/v1/fragments')
+    .auth('user1@email.com', 'password1')
+    .set('Content-Type', 'text/markdown')
+    .send(body);
+  const id = res.body.fragment.id;
+
+  const res2 = await request(app)
+    .get(`/v1/fragments/${id}.md`)
+    .auth('user1@email.com', 'password1');
+  expect(res2.statusCode).toBe(200);
+  expect(res2.type).toBe('text/markdown');
+  expect(res2.text).toBe(body);
 });
 
 describe('GET /v1/fragments/:id/info', () => {
