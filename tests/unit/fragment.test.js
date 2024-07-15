@@ -255,3 +255,15 @@ describe('Fragment class', () => {
     });
   });
 });
+describe('getMimeType(extension)', () => {
+  const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
+
+  test('returns correct MIME type for known extensions', () => {
+    expect(fragment.getMimeType('html')).toEqual('text/html');
+    expect(fragment.getMimeType('txt')).toEqual('text/plain');
+  });
+
+  test('defaults to instance mimeType for unknown extensions', () => {
+    expect(fragment.getMimeType('pdf')).toEqual('text/plain');
+  });
+});
