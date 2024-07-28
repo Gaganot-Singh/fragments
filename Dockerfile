@@ -41,11 +41,8 @@ RUN apk add --no-cache curl=8.9.0-r0
 # Copying the application from development stage!
 COPY --from=builder /app /app
 
-# Switch user to node
-USER node
-
 # Use JSON notation for CMD
-CMD ["npm", "start"]
+CMD ["node","src/index.js"]
 
 EXPOSE 8080
 
