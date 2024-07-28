@@ -35,7 +35,7 @@ ENV PORT=8080 \
 WORKDIR /app
 
 # Install curl
-RUN apk add --no-cache curl=8.5.0-r0
+RUN apk add --no-cache curl
 
 
 # Copying the application from development stage!
