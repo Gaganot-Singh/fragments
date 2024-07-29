@@ -3,6 +3,7 @@
 const { Fragment } = require('../../model/fragment');
 const contentType = require('content-type');
 const { getFragments, getFragmentByID, getFragmentInfoByID } = require('./get');
+
 /**
  * The main entry-point for the v1 version of the fragments API.
  */
@@ -30,4 +31,5 @@ router.get('/fragments/:id/info', getFragmentInfoByID);
 
 router.post('/fragments', rawBody(), require('./post'));
 
+router.delete('/fragments/:id', require('./delete'));
 module.exports = router;
