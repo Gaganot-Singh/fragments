@@ -18,6 +18,10 @@
       "essential": true,
       "environment": [
         {
+          "name": "AWS_S3_BUCKET_NAME",
+          "value": "gaganjot-singh2-fragments"
+        },
+        {
           "name": "API_URL",
           "value": "http://localhost:8080"
         },
