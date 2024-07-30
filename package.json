@@ -1,7 +1,7 @@
 {
   "name": "fragments",
   "private": true,
-  "version": "0.8.3",
+  "version": "0.9.0",
   "description": "Repository for a Node.js-based REST API using Express for managing and serving fragments of data.",
   "scripts": {
     "test:watch": "jest -c jest.config.js --runInBand --watch --",
