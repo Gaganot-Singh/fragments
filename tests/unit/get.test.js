@@ -1,4 +1,3 @@
-// tests/unit/get.test.js
 const request = require('supertest');
 const app = require('../../src/app');
 
@@ -165,21 +164,47 @@ describe('GET /v1/fragments/:id', () => {
   });
 });
 
-test('must return status 200 for .md extension when fragment type is text/markdown', async () => {
-  const body = '# This is a markdown fragment';
+test('must return status 200 for .json extension when fragment type is text/csv', async () => {
+  const csvData = 'name,age\nJohn Doe,29\nJane Doe,27';
   const res = await request(app)
     .post('/v1/fragments')
     .auth('user1@email.com', 'password1')
-    .set('Content-Type', 'text/markdown')
-    .send(body);
+    .set('Content-Type', 'text/csv')
+    .send(csvData);
   const id = res.body.fragment.id;
 
   const res2 = await request(app)
-    .get(`/v1/fragments/${id}.md`)
+    .get(`/v1/fragments/${id}.json`)
     .auth('user1@email.com', 'password1');
   expect(res2.statusCode).toBe(200);
-  expect(res2.type).toBe('text/markdown');
-  expect(res2.text).toBe(body);
+  expect(res2.type).toBe('application/json');
+  const jsonResponse = JSON.parse(res2.text);
+  expect(jsonResponse).toEqual([
+    { name: 'John Doe', age: '29' },
+    { name: 'Jane Doe', age: '27' }
+  ]);
+});
+
+test('must return status 200 for .csv extension when fragment type is application/json', async () => {
+  const jsonData = [
+    { name: 'John Doe', age: 29 },
+    { name: 'Jane Doe', age: 27 }
+  ];
+  const res = await request(app)
+    .post('/v1/fragments')
+    .auth('user1@email.com', 'password1')
+    .set('Content-Type', 'application/json')
+    .send(JSON.stringify(jsonData));
+  const id = res.body.fragment.id;
+
+  const res2 = await request(app)
+    .get(`/v1/fragments/${id}.csv`)
+    .auth('user1@email.com', 'password1');
+  expect(res2.statusCode).toBe(200);
+  expect(res2.type).toBe('text/csv');
+  expect(res2.text).toContain('name,age');
+  expect(res2.text).toContain('John Doe,29');
+  expect(res2.text).toContain('Jane Doe,27');
 });
 
 describe('GET /v1/fragments/:id/info', () => {

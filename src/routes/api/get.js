@@ -1,7 +1,6 @@
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
-const markdownIt = require('markdown-it')();
 
 const getFragments = async (req, res) => {
   try {
@@ -51,36 +50,14 @@ const getFragmentByID = async (req, res) => {
   try {
     const fragmentData = await fragment.getData();
     if (extension) {
-      if (extension === 'txt') {
-        logger.debug('Returning fragment data as text/plain');
-        res.status(200).type('text/plain').send(fragmentData);
-        return;
-      }
-      if (extension === 'html' && fragment.type === 'text/markdown') {
-        logger.debug('Converting Markdown to HTML');
-        const htmlData = markdownIt.render(fragmentData.toString());
-        res.status(200).type('text/html').send(htmlData);
-        logger.info('Fragment data sent as text/html');
-        return;
-      }
-
-      if (extension === 'md' && fragment.type === 'text/markdown') {
-        logger.debug('Returning Markdown data');
-        res.status(200).type('text/markdown').send(fragmentData);
-        logger.info('Fragment data sent as text/markdown');
-        return;
-      } else {
-        logger.warn(`Unsupported format requested: ${extension}`);
-        res.status(415).json(createErrorResponse(415, 'Requested format is not supported.'));
-        return;
-      }
+      const converted = await fragment.convert(extension);
+      res.status(200).type(converted.type).send(converted.data);
+    } else {
+      res.status(200).type(fragment.mimeType).send(fragmentData);
     }
-
-    logger.debug('Returning fragment data with original mimeType');
-    res.status(200).type(fragment.mimeType).send(fragmentData);
   } catch (error) {
     logger.error({ error }, 'Failed to retrieve fragment data');
-    res.status(500).json(createErrorResponse(500, 'Internal server error'));
+    res.status(415).json(createErrorResponse(415, 'Requested format is not supported.'));
   }
 };
 
